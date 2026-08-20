@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router";
 import { registerAction } from "@/auth/actions/register.action";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
+import { AuthHeroPanel } from "@/auth/components/AuthHeroPanel";
 import { PasswordRequirements } from "@/auth/components/PasswordRequirements";
 import { getAuthErrorMessage } from "@/auth/helpers/auth-error";
 import {
@@ -203,14 +204,7 @@ export const RegisterPage = () => {
               </div>
             </div>
           </form>
-          <div className="relative hidden bg-navy md:block">
-            <img
-              src="/login.jpg"
-              alt="Imagen"
-              className="absolute inset-0 h-full w-full object-cover opacity-80"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-navy/80 via-navy/20 to-gold/10" />
-          </div>
+          <AuthHeroPanel />
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
