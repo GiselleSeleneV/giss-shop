@@ -1,5 +1,5 @@
 import { useAuthStore } from "@/auth/store/auth.store";
-import { Search, Bell, MessageSquare, Settings, Menu } from "lucide-react";
+import { Search, Settings, Menu } from "lucide-react";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 
@@ -53,23 +53,6 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
           </div>
 
           <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
-            <button
-              type="button"
-              className="relative rounded-lg p-2 text-navy/70 transition-colors hover:bg-[#f7f3eb]"
-              aria-label="Notificaciones"
-            >
-              <Bell size={20} />
-              <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-gold" />
-            </button>
-
-            <button
-              type="button"
-              className="hidden rounded-lg p-2 text-navy/70 transition-colors hover:bg-[#f7f3eb] sm:block"
-              aria-label="Mensajes"
-            >
-              <MessageSquare size={20} />
-            </button>
-
             <button
               type="button"
               className="hidden rounded-lg p-2 text-navy/70 transition-colors hover:bg-[#f7f3eb] md:block"

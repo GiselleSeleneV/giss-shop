@@ -18,6 +18,7 @@ import {
   Shirt,
   Store,
   Users,
+  FileText,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { Link } from "react-router";
@@ -409,6 +410,12 @@ export const DashboardPage = () => {
                 icon: Users,
                 label: "Usuarios",
                 hint: "Roles y cuentas activas",
+              },
+              {
+                to: "/admin/reports",
+                icon: FileText,
+                label: "Reportes",
+                hint: "Inventario y PDF",
               },
               {
                 to: "/",
