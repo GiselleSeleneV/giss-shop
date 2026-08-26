@@ -11,10 +11,12 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
+  LogOut,
 } from "lucide-react";
 import { CustomLogo } from "@/components/custom/CustomLogo";
 import { Link, useLocation } from "react-router";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/auth/store/auth.store";
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -23,6 +25,13 @@ interface SidebarProps {
   onMobileClose: () => void;
 }
 
+const getInitials = (fullName?: string) => {
+  if (!fullName?.trim()) return "";
+
+  const [first, second] = fullName.trim().split(/\s+/);
+  return `${first.charAt(0)}${second?.charAt(0) ?? ""}`.toUpperCase();
+};
+
 export const AdminSidebar: React.FC<SidebarProps> = ({
   isCollapsed,
   onToggle,
@@ -30,6 +39,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
   onMobileClose,
 }) => {
   const { pathname } = useLocation();
+  const { user, logout } = useAuthStore();
 
   const menuItems = [
     { icon: Home, label: "Panel de control", to: "/admin" },
@@ -125,25 +135,47 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
         </ul>
       </nav>
 
-      <div
-        className={cn(
-          "border-t border-white/10 p-4",
-          isCollapsed && "lg:hidden",
-        )}
-      >
-          <div className="flex cursor-pointer items-center gap-3 rounded-md p-3 transition-colors hover:bg-white/5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold text-sm font-semibold text-navy">
-              JD
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-white">
-                John Doe
-              </p>
-              <p className="truncate text-xs text-white/50">
-                john@company.com
-              </p>
-            </div>
+      <div className="border-t border-white/10 p-3">
+        <div
+          className={cn(
+            "flex items-center gap-3 rounded-md p-2",
+            isCollapsed && "lg:justify-center",
+          )}
+        >
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gold text-sm font-semibold text-navy">
+            {getInitials(user?.fullName)}
           </div>
+          <div className={cn("min-w-0 flex-1", isCollapsed && "lg:hidden")}>
+            <p className="truncate text-sm font-medium text-white">
+              {user?.fullName}
+            </p>
+            <p className="truncate text-xs text-white/50">{user?.email}</p>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => {
+            onMobileClose();
+            logout();
+          }}
+          className={cn(
+            "mt-1 flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors",
+            "text-white/55 hover:bg-red-500/15 hover:text-red-300",
+            isCollapsed && "lg:justify-center lg:px-2",
+          )}
+          aria-label="Cerrar sesión"
+        >
+          <LogOut size={18} className="shrink-0" />
+          <span
+            className={cn(
+              "font-medium tracking-wide",
+              isCollapsed && "lg:hidden",
+            )}
+          >
+            Cerrar sesión
+          </span>
+        </button>
       </div>
     </aside>
   );

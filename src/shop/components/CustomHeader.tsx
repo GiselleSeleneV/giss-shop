@@ -1,4 +1,4 @@
-import { LogIn, Menu, Search, Shield, ShoppingBag } from "lucide-react";
+import { LogIn, LogOut, Menu, Search, Shield, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
@@ -7,9 +7,12 @@ import { cn } from "@/lib/utils";
 import { CustomLogo } from "@/components/custom/CustomLogo";
 import { useCart } from "@/shop/cart/CartContext";
 import { ShopSidebar } from "./ShopSidebar";
+import { useAuthStore } from "@/auth/store/auth.store";
 
 export const CustomHeader = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { authStatus, isAdmin, logout } = useAuthStore();
+
   const { gender } = useParams();
   const { pathname } = useLocation();
   const { openCart, totalItems } = useCart();
@@ -111,26 +114,39 @@ export const CustomHeader = () => {
                 ) : null}
               </Button>
 
-              <Link to="/auth/login" className="hidden lg:inline-flex">
+              {authStatus === "unauthenticated" ? (
+                <Link to="/auth/login" className="hidden lg:inline-flex">
+                  <Button
+                    size="sm"
+                    className="ml-2 h-8 px-3 tracking-wide bg-navy text-gold hover:bg-navy/90"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    Iniciar sesión
+                  </Button>
+                </Link>
+              ) : (
                 <Button
+                  variant="destructive"
                   size="sm"
-                  className="ml-2 h-8 px-3 tracking-wide bg-navy text-gold hover:bg-navy/90"
+                  className="ml-2 h-8 px-3"
+                  onClick={logout}
                 >
-                  <LogIn className="h-4 w-4" />
-                  Iniciar sesión
+                  <LogOut className="h-4 w-4" />
+                  Cerrar sesión
                 </Button>
-              </Link>
+              )}
 
-              <Link to="/admin" className="hidden lg:inline-flex">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="ml-2 h-8 px-3 border-navy/20 text-navy hover:bg-navy hover:text-white"
-                >
-                  <Shield className="h-4 w-4" />
-                  Admin
-                </Button>
-              </Link>
+              {isAdmin() && (
+                <Link to="/admin" className="hidden lg:inline-flex">
+                  <Button
+                    size="sm"
+                    className="ml-2 h-8 px-3 tracking-wide bg-navy text-gold hover:bg-navy/90"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Button>
+                </Link>
+              )}
             </div>
           </div>
         </div>

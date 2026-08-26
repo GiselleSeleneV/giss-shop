@@ -4,17 +4,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { CustomLogo } from "@/components/custom/CustomLogo";
 import { Link, useNavigate } from "react-router";
-import { loginAction } from "@/auth/actions/login.action";
 import { toast } from "sonner";
 import { useMemo, useState } from "react";
 import { AuthHeroPanel } from "@/auth/components/AuthHeroPanel";
 import { PasswordRequirements } from "@/auth/components/PasswordRequirements";
-import { getAuthErrorMessage } from "@/auth/helpers/auth-error";
 import { isEmailValid, isPasswordValid } from "@/auth/helpers/auth-validation";
 import { cn } from "@/lib/utils";
+import { useAuthStore } from "@/auth/store/auth.store";
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const { login } = useAuthStore();
+
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -38,16 +39,15 @@ export const LoginPage = () => {
     setPasswordTouched(true);
     if (!emailOk || !passwordOk) return;
 
-    try {
-      setIsLoading(true);
-      const data = await loginAction(email.trim(), password);
-      localStorage.setItem("token", data.token);
+    const loginIsSuccess = await login(email.trim(), password);
+
+    if (loginIsSuccess) {
       navigate("/");
-    } catch (error) {
-      toast.error(getAuthErrorMessage(error));
-    } finally {
-      setIsLoading(false);
+      return;
     }
+
+    toast.error("Credenciales incorrectas");
+    setIsLoading(false);
   };
 
   return (

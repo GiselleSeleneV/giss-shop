@@ -95,19 +95,19 @@ export const ProductsGrid = ({ products }: ProductsProps) => {
                 aria-label="Cerrar filtros"
               />
               <div className="absolute inset-y-0 left-0 w-full max-w-sm overflow-y-auto bg-white p-4 sm:p-6 shadow-2xl">
-              <div className="flex items-center justify-between mb-6">
-                <h3 className="font-montserrat text-lg font-light tracking-[0.16em] uppercase">
-                  Filtros
-                </h3>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowFilters(false)}
-                >
-                  Cerrar
-                </Button>
-              </div>
-              <FilterSidebar />
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="font-montserrat text-lg font-light tracking-[0.16em] uppercase">
+                    Filtros
+                  </h3>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowFilters(false)}
+                  >
+                    Cerrar
+                  </Button>
+                </div>
+                <FilterSidebar />
               </div>
             </div>
           )}

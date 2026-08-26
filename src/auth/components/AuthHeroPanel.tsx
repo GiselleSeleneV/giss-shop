@@ -15,9 +15,18 @@ type Particle = {
   depth: number;
 };
 
+type TrailRing = {
+  x: number;
+  y: number;
+  r: number;
+  alpha: number;
+};
+
 const GOLD = { r: 175, g: 150, b: 97 };
 const PARTICLE_COUNT = 48;
 const LERP = 0.12;
+const TRAIL_LERP = 0.055;
+const RING_SPAWN_GAP = 22;
 
 const prefersReducedMotion = () =>
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -45,6 +54,8 @@ export const AuthHeroPanel = ({
   const ringsRef = useRef<HTMLDivElement>(null);
   const orbsRef = useRef<HTMLDivElement>(null);
   const lightRef = useRef<HTMLDivElement>(null);
+  const haloRef = useRef<HTMLDivElement>(null);
+  const trailHaloRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -65,6 +76,9 @@ export const AuthHeroPanel = ({
 
     const pointer = { x: 0, y: 0 };
     const current = { x: 0, y: 0 };
+    const trail = { x: 0, y: 0 };
+    const lastSpawn = { x: 0, y: 0 };
+    let trailRings: TrailRing[] = [];
 
     const resize = () => {
       const rect = root.getBoundingClientRect();
@@ -121,14 +135,41 @@ export const AuthHeroPanel = ({
       ctx.shadowBlur = 0;
     };
 
-    const applyScene = (mx: number, my: number) => {
+    const drawTrailRings = (mx: number, my: number, inside: boolean) => {
+      const cx = ((mx + 1) / 2) * width;
+      const cy = ((my + 1) / 2) * height;
+
+      if (inside && Math.hypot(cx - lastSpawn.x, cy - lastSpawn.y) > RING_SPAWN_GAP) {
+        trailRings.push({ x: cx, y: cy, r: 16, alpha: 0.55 });
+        lastSpawn.x = cx;
+        lastSpawn.y = cy;
+        if (trailRings.length > 24) trailRings.shift();
+      }
+
+      ctx.lineWidth = 1;
+      trailRings = trailRings.filter((ring) => {
+        ring.r += 0.42;
+        ring.alpha *= 0.935;
+        if (ring.alpha < 0.03) return false;
+        ctx.strokeStyle = `rgba(${GOLD.r}, ${GOLD.g}, ${GOLD.b}, ${ring.alpha})`;
+        ctx.beginPath();
+        ctx.arc(ring.x, ring.y, ring.r, 0, Math.PI * 2);
+        ctx.stroke();
+        return true;
+      });
+    };
+
+    const applyScene = (mx: number, my: number, tx: number, ty: number) => {
       const scene = sceneRef.current;
       const image = imageRef.current;
       const rings = ringsRef.current;
       const orbs = orbsRef.current;
       const light = lightRef.current;
+      const halo = haloRef.current;
+      const trailHalo = trailHaloRef.current;
       const wiggleX = Math.sin(time * 0.7) * 4;
       const wiggleY = Math.cos(time * 0.55) * 3;
+      const inside = mx >= -1.02 && mx <= 1.02 && my >= -1.02 && my <= 1.02;
 
       if (scene) {
         scene.style.transform = `perspective(1100px) rotateX(${(-my * 6).toFixed(3)}deg) rotateY(${(mx * 8).toFixed(3)}deg)`;
@@ -151,6 +192,18 @@ export const AuthHeroPanel = ({
           radial-gradient(circle 520px at ${100 - px}% ${100 - py}%, rgba(15, 23, 42, 0.38), transparent 62%)
         `;
       }
+      if (halo) {
+        const x = ((mx + 1) / 2) * width - 40;
+        const y = ((my + 1) / 2) * height - 40;
+        halo.style.opacity = inside ? "1" : "0";
+        halo.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+      }
+      if (trailHalo) {
+        const x = ((tx + 1) / 2) * width - 56;
+        const y = ((ty + 1) / 2) * height - 56;
+        trailHalo.style.opacity = inside ? "0.7" : "0";
+        trailHalo.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
+      }
     };
 
     const tick = () => {
@@ -158,15 +211,23 @@ export const AuthHeroPanel = ({
       time += 0.016;
       current.x += (pointer.x - current.x) * LERP;
       current.y += (pointer.y - current.y) * LERP;
-      applyScene(current.x, current.y);
+      trail.x += (current.x - trail.x) * TRAIL_LERP;
+      trail.y += (current.y - trail.y) * TRAIL_LERP;
+      const inside =
+        current.x >= -1.02 &&
+        current.x <= 1.02 &&
+        current.y >= -1.02 &&
+        current.y <= 1.02;
+      applyScene(current.x, current.y, trail.x, trail.y);
       drawParticles(current.x, current.y);
+      drawTrailRings(current.x, current.y, inside);
       frame = window.requestAnimationFrame(tick);
     };
 
     const start = () => {
       if (disposed || prefersReducedMotion() || !isDesktopPanel()) return;
       resize();
-      applyScene(0, 0);
+      applyScene(0, 0, 0, 0);
       window.addEventListener("pointermove", setPointerFromEvent, { passive: true });
       window.addEventListener("resize", resize);
       frame = window.requestAnimationFrame(tick);
@@ -250,6 +311,28 @@ export const AuthHeroPanel = ({
             "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
         }}
       />
+
+      <div
+        ref={trailHaloRef}
+        className="pointer-events-none absolute left-0 top-0 z-10 size-28 rounded-full border border-gold/25 opacity-0 will-change-transform"
+      />
+      <div
+        ref={haloRef}
+        className="pointer-events-none absolute left-0 top-0 z-10 size-20 rounded-full border border-gold/55 opacity-0 shadow-[0_0_28px_rgba(175,150,97,0.35)] will-change-transform"
+      />
+
+      <div className="pointer-events-none absolute bottom-0 left-0 z-20 px-6 pb-6">
+        <p className="font-montserrat text-sm font-semibold tracking-tight text-white">
+          Giss <span className="font-light text-gold">|</span>{" "}
+          <span className="text-[10px] font-normal uppercase tracking-[0.22em] text-gold">
+            Style
+          </span>
+        </p>
+        <div className="mt-2 h-px w-10 bg-gold/80" />
+        <p className="mt-2 text-[10px] uppercase tracking-[0.22em] text-white/70">
+          Colección esencial
+        </p>
+      </div>
     </div>
   );
 };
