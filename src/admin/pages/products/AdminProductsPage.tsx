@@ -21,7 +21,7 @@ export const AdminProductsPage = () => {
 
   return (
     <PageEnter>
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between mb-6 animate-fade-up">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between animate-fade-up">
         <AdminTitle
           title="Productos"
           description="Aqui puedes ver y administrar tus productos"

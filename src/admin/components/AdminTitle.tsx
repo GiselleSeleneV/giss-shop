@@ -5,7 +5,7 @@ interface AdminTitleProps {
 
 export const AdminTitle = ({ title, description }: AdminTitleProps) => {
   return (
-    <div className="mb-4 sm:mb-6">
+    <div>
       <h1 className="font-montserrat text-xl sm:text-2xl font-light tracking-tight text-navy mb-2">
         {title}
       </h1>

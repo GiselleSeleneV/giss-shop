@@ -173,7 +173,7 @@ export const ProductForm = ({
   return (
     <PageEnter>
       <form onSubmit={handleSubmit(handleFormSubmit)} className="pb-8">
-        <div className="mb-6 flex flex-col gap-4 sm:mb-8 lg:flex-row lg:items-start lg:justify-between">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="animate-fade-up">
             <AdminTitle title={title} description={subTitle} />
             <div className="animate-gold-line h-px bg-gold" />
