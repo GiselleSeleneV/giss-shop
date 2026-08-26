@@ -49,6 +49,7 @@ export const AdminProductPage = () => {
 
   return (
     <ProductForm
+      key={`${product.id || "new"}-${(product.images ?? []).join("|")}`}
       title={title}
       subTitle={subtitle}
       product={product}

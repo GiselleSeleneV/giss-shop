@@ -20,10 +20,11 @@ export const useProduct = (id: string) => {
       queryClient.invalidateQueries({
         queryKey: ["products"],
       });
-      queryClient.invalidateQueries({
-        queryKey: ["product", { id: product.id }],
-      });
-      queryClient.setQueryData(["products", { id: product.id }], product);
+
+      const cacheIds = [id, product.id, product.slug].filter(Boolean);
+      for (const cacheId of cacheIds) {
+        queryClient.setQueryData(["product", { id: cacheId }], product);
+      }
     },
   });
 

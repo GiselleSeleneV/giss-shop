@@ -10,6 +10,8 @@ import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
 import { AdminProductPage } from "./admin/pages/product/AdminProductPage";
 import { lazy } from "react";
 import { AdminProductsPage } from "./admin/pages/products/AdminProductsPage";
+import { AdminUsersPage } from "./admin/pages/users/AdminUsersPage";
+import { AdminUserPage } from "./admin/pages/user/AdminUserPage";
 import {
   AdminRoute,
   UnauthenticateddRoutes,
@@ -86,6 +88,14 @@ export const AppRouter = createBrowserRouter([
       {
         path: "products",
         element: <AdminProductsPage />,
+      },
+      {
+        path: "users",
+        element: <AdminUsersPage />,
+      },
+      {
+        path: "user/:id",
+        element: <AdminUserPage />,
       },
     ],
   },

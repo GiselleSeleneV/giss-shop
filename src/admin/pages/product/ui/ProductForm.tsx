@@ -71,20 +71,27 @@ export const ProductForm = ({
     getValues,
     setValue,
     watch,
+    reset,
   } = useForm<FormInputs>({
     defaultValues: product,
   });
   const labelInputRef = useRef<HTMLInputElement>(null);
+  const [currentImages, setCurrentImages] = useState<string[]>(
+    product.images ?? [],
+  );
   const [files, setFiles] = useState<File[]>([]);
+  const isEditing = Boolean(product.id);
+  const productImagesKey = (product.images ?? []).join("|");
 
   useEffect(() => {
+    reset(product);
+    setCurrentImages(product.images ?? []);
     setFiles([]);
-  }, [product]);
+  }, [product, productImagesKey, reset]);
 
   const selectedSizes = watch("sizes") ?? [];
   const selectedTags = watch("tags") ?? [];
   const currentStock = watch("stock") ?? 0;
-  const currentImages = watch("images") ?? [];
 
   const addTag = () => {
     const newTag = labelInputRef.current!.value.trim();
@@ -127,8 +134,6 @@ export const ProductForm = ({
 
   const appendFiles = (incoming: File[]) => {
     setFiles((prev) => [...prev, ...incoming]);
-    const currentFiles = getValues("files") || [];
-    setValue("files", [...currentFiles, ...incoming]);
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -142,26 +147,32 @@ export const ProductForm = ({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     appendFiles(Array.from(e.target.files));
+    e.target.value = "";
   };
 
   const removePendingFile = (indexToRemove: number) => {
-    setFiles((prevFiles) => {
-      const next = prevFiles.filter((_, index) => index !== indexToRemove);
-      setValue("files", next);
-      return next;
-    });
+    setFiles((prevFiles) =>
+      prevFiles.filter((_, index) => index !== indexToRemove),
+    );
   };
 
   const removeCurrentImage = (indexToRemove: number) => {
-    setValue(
-      "images",
-      currentImages.filter((_, index) => index !== indexToRemove),
+    setCurrentImages((prev) =>
+      prev.filter((_, index) => index !== indexToRemove),
     );
+  };
+
+  const handleFormSubmit = (data: FormInputs) => {
+    return onSubmit({
+      ...data,
+      images: currentImages,
+      files,
+    });
   };
 
   return (
     <PageEnter>
-      <form onSubmit={handleSubmit(onSubmit)} className="pb-8">
+      <form onSubmit={handleSubmit(handleFormSubmit)} className="pb-8">
         <div className="mb-6 flex flex-col gap-4 sm:mb-8 lg:flex-row lg:items-start lg:justify-between">
           <div className="animate-fade-up">
             <AdminTitle title={title} description={subTitle} />
@@ -274,10 +285,7 @@ export const ProductForm = ({
                   <label className="mb-2 block text-[11px] font-medium tracking-[0.14em] uppercase text-navy/60">
                     Género
                   </label>
-                  <select
-                    {...register("gender")}
-                    className={fieldClass()}
-                  >
+                  <select {...register("gender")} className={fieldClass()}>
                     <option value="men">Hombre</option>
                     <option value="women">Mujer</option>
                     <option value="unisex">Unisex</option>
@@ -292,7 +300,10 @@ export const ProductForm = ({
                   <textarea
                     rows={5}
                     {...register("description", { required: true })}
-                    className={cn(fieldClass(!!errors.description), "resize-none")}
+                    className={cn(
+                      fieldClass(!!errors.description),
+                      "resize-none",
+                    )}
                     placeholder="Descripción del producto"
                   />
                   {errors.description ? (
@@ -439,73 +450,77 @@ export const ProductForm = ({
                 </div>
               </div>
 
-              <div
-                className={cn("mt-6 space-y-3", {
-                  hidden: files.length === 0,
-                })}
-              >
-                <h3 className="text-[11px] font-medium tracking-[0.14em] uppercase text-gold">
-                  Por cargar
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {files.map((file, index) => (
-                    <div
-                      key={`${file.name}-${file.lastModified}-${index}`}
-                      className="group relative animate-image-pop"
-                      style={{ animationDelay: `${index * 60}ms` }}
-                    >
-                      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-gold/30 bg-[#f7f3eb] transition-transform duration-300 group-hover:-translate-y-0.5">
-                        <img
-                          src={URL.createObjectURL(file)}
-                          alt={file.name}
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removePendingFile(index)}
-                        className="absolute top-2 right-2 rounded-full bg-navy p-1 text-gold opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100"
+              {files.length > 0 ? (
+                <div className="mt-6 space-y-3 border border-red-500 rounded-lg p-2">
+                  <h3 className="text-[11px] font-medium tracking-[0.14em] uppercase text-gold">
+                    Imágenes por cargar
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {files.map((file, index) => (
+                      <div
+                        key={`${file.name}-${file.lastModified}-${index}`}
+                        className="group relative animate-image-pop"
+                        style={{ animationDelay: `${index * 60}ms` }}
                       >
-                        <X className="h-3 w-3" />
-                      </button>
-                    </div>
-                  ))}
+                        <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-gold/30 bg-[#f7f3eb] transition-transform duration-300 group-hover:-translate-y-0.5">
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={file.name}
+                            className="h-full w-full object-cover"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          aria-label="Quitar imagen por cargar"
+                          onClick={() => removePendingFile(index)}
+                          className="absolute top-2 right-2 rounded-full bg-navy p-1 text-gold shadow-sm transition-colors hover:bg-destructive hover:text-white"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              ) : null}
 
-              <div
-                className={cn("mt-6 space-y-3", {
-                  hidden: currentImages.length === 0,
-                })}
-              >
-                <h3 className="text-[11px] font-medium tracking-[0.14em] uppercase text-navy/50">
-                  Actuales
-                </h3>
-                <div className="grid grid-cols-2 gap-3">
-                  {currentImages.map((image, index) => (
-                    <div
-                      key={`${image}-${index}`}
-                      className="group relative animate-image-pop"
-                      style={{ animationDelay: `${index * 50}ms` }}
-                    >
-                      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-navy/10 bg-[#f7f3eb] transition-transform duration-300 group-hover:-translate-y-0.5">
-                        <img
-                          src={image}
-                          alt="Producto"
-                          className="h-full w-full object-cover"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeCurrentImage(index)}
-                        className="absolute top-2 right-2 rounded-full bg-navy p-1 text-gold opacity-0 shadow-sm transition-opacity duration-200 group-hover:opacity-100"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
+              {isEditing ? (
+                <div className="mt-6 space-y-3">
+                  <h3 className="text-[11px] font-medium tracking-[0.14em] uppercase text-navy/50">
+                    Imágenes actuales
+                  </h3>
+                  {currentImages.length === 0 ? (
+                    <p className="text-[11px] tracking-wide text-navy/40">
+                      Sin imágenes actuales.
+                    </p>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-3">
+                      {currentImages.map((image, index) => (
+                        <div
+                          key={`${image}-${index}`}
+                          className="group relative animate-image-pop"
+                          style={{ animationDelay: `${index * 50}ms` }}
+                        >
+                          <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-navy/10 bg-[#f7f3eb] transition-transform duration-300 group-hover:-translate-y-0.5">
+                            <img
+                              src={image}
+                              alt="Producto"
+                              className="h-full w-full object-cover"
+                            />
+                          </div>
+                          <button
+                            type="button"
+                            aria-label="Quitar imagen actual"
+                            onClick={() => removeCurrentImage(index)}
+                            className="absolute top-2 right-2 rounded-full bg-navy p-1 text-gold shadow-sm transition-colors hover:bg-destructive hover:text-white"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  )}
                 </div>
-              </div>
+              ) : null}
             </SectionCard>
 
             <SectionCard title="Estado" delay="220ms">
@@ -551,7 +566,9 @@ export const ProductForm = ({
                   <span className="text-[11px] tracking-[0.14em] uppercase text-navy/50">
                     Tallas
                   </span>
-                  <span className="text-sm text-navy">{selectedSizes.length}</span>
+                  <span className="text-sm text-navy">
+                    {selectedSizes.length}
+                  </span>
                 </div>
               </div>
             </SectionCard>

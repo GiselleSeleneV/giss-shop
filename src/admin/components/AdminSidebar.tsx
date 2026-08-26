@@ -56,6 +56,9 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
     if (pathname.includes("/admin/product/") && to === "/admin/products") {
       return true;
     }
+    if (pathname.includes("/admin/user/") && to === "/admin/users") {
+      return true;
+    }
     return pathname === to;
   };
 

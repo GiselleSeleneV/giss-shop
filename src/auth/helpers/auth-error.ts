@@ -15,6 +15,7 @@ const messageMap: Record<string, string> = {
   "The password must have a Uppercase, lowercase letter and a number":
     "La contraseña debe incluir mayúscula, minúscula y un número o símbolo.",
   "User already exists": "Este correo ya está registrado.",
+  "Email already exists": "Este correo ya está registrado.",
   "fullName must be a string": "El nombre no es válido.",
   "fullName must be longer than or equal to 1 characters":
     "El nombre es obligatorio.",

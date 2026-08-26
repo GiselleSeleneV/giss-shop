@@ -12,17 +12,9 @@ export const createUpdateProductAction = async (
   rest.stock = Number(rest.stock || 0);
   rest.price = Number(rest.price || 0);
 
-  const imageFileNames = images.map(getImageFileName);
-
-  if (files.length > 0) {
-    const newImagesNames = await uploadFiles(files);
-    imageFileNames.push(...newImagesNames);
-  }
-
-  const imagesToSave = imageFileNames.map((image) => {
-    if (image.includes("http")) return image.split("/").pop() || "";
-    return image;
-  });
+  const keptImageNames = images.map(getImageFileName);
+  const uploadedImageNames = files.length > 0 ? await uploadFiles(files) : [];
+  const imagesToSave = [...keptImageNames, ...uploadedImageNames];
 
   const { data } = await gissApi<Product>({
     url: isCreating ? "/products" : `/products/${id}`,
@@ -35,7 +27,7 @@ export const createUpdateProductAction = async (
 
   return {
     ...data,
-    images: data.images.map(getProductImageUrl),
+    images: imagesToSave.map(getProductImageUrl),
   };
 };
 
