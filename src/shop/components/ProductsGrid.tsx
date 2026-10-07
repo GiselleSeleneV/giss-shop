@@ -5,6 +5,7 @@ import { FilterSidebar } from "./FilterSidebar";
 import { useSearchParams } from "react-router";
 import { useEffect, useState } from "react";
 import type { Product } from "@/interfaces/product.interface";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 
 interface ProductsProps {
   products: Product[];
@@ -128,7 +129,7 @@ export const ProductsGrid = ({ products }: ProductsProps) => {
                   slug={product.slug}
                   name={product.title}
                   price={product.price}
-                  image={product.images[0] || ""}
+                  image={getProductImageUrl(product.images[0])}
                   category={product.gender}
                   sizes={product.sizes}
                   index={index}

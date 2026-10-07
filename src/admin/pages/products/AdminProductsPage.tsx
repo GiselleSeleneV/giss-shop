@@ -13,6 +13,7 @@ import {
 import { currencyFormatter } from "@/lib/currencyFormatter";
 import { cn } from "@/lib/utils";
 import { useProducts } from "@/shop/hooks/useProducts";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { Pencil, PlusIcon } from "lucide-react";
 import { Link } from "react-router";
 
@@ -84,7 +85,7 @@ export const AdminProductsPage = () => {
                 <TableCell>
                   <div className="size-16 overflow-hidden rounded-md border border-navy/10 bg-[#f7f3eb]">
                     <img
-                      src={product.images[0] || ""}
+                      src={getProductImageUrl(product.images[0])}
                       alt="Producto"
                       className="h-full w-full object-cover"
                     />

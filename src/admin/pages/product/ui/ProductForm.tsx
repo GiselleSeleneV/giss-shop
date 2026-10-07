@@ -3,6 +3,7 @@ import { PageEnter } from "@/components/custom/PageEnter";
 import { Button } from "@/components/ui/button";
 import type { Product, Size } from "@/interfaces/product.interface";
 import { cn } from "@/lib/utils";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { Plus, SaveAll, Tag, Upload, X } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
@@ -502,7 +503,7 @@ export const ProductForm = ({
                         >
                           <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg border border-navy/10 bg-[#f7f3eb] transition-transform duration-300 group-hover:-translate-y-0.5">
                             <img
-                              src={image}
+                              src={getProductImageUrl(image)}
                               alt="Producto"
                               className="h-full w-full object-cover"
                             />

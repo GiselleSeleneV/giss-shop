@@ -26,7 +26,7 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 shrink-0 border-b border-gold/20 bg-white/95 backdrop-blur-md">
+    <header className="z-30 shrink-0 border-b border-gold/20 bg-white/95 backdrop-blur-md">
       <div className="flex flex-col gap-2 px-3 py-2 sm:h-16 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:px-4 sm:py-0 lg:px-6">
         <div className="flex min-w-0 items-center justify-between gap-2 sm:contents">
           <button

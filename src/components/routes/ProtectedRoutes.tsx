@@ -13,11 +13,13 @@ export const AuthenticatedRoutes = ({ children }: PropsWithChildren) => {
 };
 
 export const UnauthenticateddRoutes = ({ children }: PropsWithChildren) => {
-  const { authStatus } = useAuthStore();
+  const { authStatus, isAdmin } = useAuthStore();
 
   if (authStatus === "checking") return null;
 
-  if (authStatus === "authenticated") return <Navigate to="/" />;
+  if (authStatus === "authenticated") {
+    return <Navigate to={isAdmin() ? "/admin" : "/"} />;
+  }
 
   return children;
 };

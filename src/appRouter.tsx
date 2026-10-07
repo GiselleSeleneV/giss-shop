@@ -4,6 +4,7 @@ import { HomePage } from "./shop/page/home/HomePage";
 import { ProductPage } from "./shop/page/product/ProductPage";
 import { GenderPage } from "./shop/page/gender/GenderPage";
 import { HelpPage } from "./shop/page/help/HelpPage";
+import { LegalNoticePage } from "./shop/page/legal/LegalNoticePage";
 import { LoginPage } from "./auth/pages/login/LoginPage";
 import { RegisterPage } from "./auth/pages/register/RegisterPage";
 import { DashboardPage } from "./admin/pages/dashboard/DashboardPage";
@@ -42,6 +43,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "ayuda",
         element: <HelpPage />,
+      },
+      {
+        path: "aviso",
+        element: <LegalNoticePage />,
       },
     ],
   },
@@ -101,6 +106,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "reports",
         element: <AdminReportsPage />,
+      },
+      {
+        path: "ayuda",
+        element: <HelpPage />,
       },
     ],
   },

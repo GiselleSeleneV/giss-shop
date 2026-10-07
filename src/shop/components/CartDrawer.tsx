@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/shop/cart/CartContext";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { Minus, Plus, ShoppingBag, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
@@ -79,7 +80,7 @@ export const CartDrawer = () => {
                         className="size-20 shrink-0 overflow-hidden rounded-sm ring-1 ring-navy/10"
                       >
                         <img
-                          src={item.image}
+                          src={getProductImageUrl(item.image)}
                           alt={item.title}
                           className="h-full w-full object-cover"
                         />

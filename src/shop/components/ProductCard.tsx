@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import type { Size } from "@/interfaces/product.interface";
 import { useCart } from "@/shop/cart/CartContext";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { Link } from "react-router";
 
 interface ProductCardProps {
@@ -35,7 +36,7 @@ export const ProductCard = ({
         <CardContent className="p-0">
           <div className="relative aspect-square overflow-hidden bg-muted rounded-sm ring-1 ring-gold/15">
             <img
-              src={image}
+              src={getProductImageUrl(image)}
               alt={name}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
             />

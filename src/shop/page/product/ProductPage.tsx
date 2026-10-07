@@ -5,6 +5,7 @@ import type { Gender, Size } from "@/interfaces/product.interface";
 import { ProductGallery } from "@/shop/components/ProductGallery";
 import { useProduct } from "@/shop/hooks/useProduct";
 import { useCart } from "@/shop/cart/CartContext";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -194,7 +195,7 @@ export const ProductPage = () => {
                   slug: product.slug,
                   title: product.title,
                   price: product.price,
-                  image: product.images[0] || "",
+                  image: getProductImageUrl(product.images[0]),
                   size: selectedSize,
                 });
               }}

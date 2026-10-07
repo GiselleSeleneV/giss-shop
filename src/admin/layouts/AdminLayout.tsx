@@ -20,7 +20,7 @@ const AdminLayout = () => {
   }, [mobileOpen]);
 
   return (
-    <div className="min-h-screen bg-[#f7f3eb] flex max-w-7xl mx-auto overflow-x-hidden">
+    <div className="flex h-dvh overflow-hidden bg-[#f7f3eb]">
       {mobileOpen ? (
         <button
           type="button"
@@ -37,10 +37,10 @@ const AdminLayout = () => {
         onMobileClose={() => setMobileOpen(false)}
       />
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <AdminHeader onMenuClick={() => setMobileOpen(true)} />
 
-        <main className="flex-1 min-w-0 p-4 sm:p-6">
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto overscroll-contain p-4 sm:p-6">
           <Outlet />
         </main>
       </div>

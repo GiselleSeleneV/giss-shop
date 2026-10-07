@@ -45,7 +45,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
     { icon: Users, label: "Usuarios", to: "/admin/users" },
     { icon: FileText, label: "Reportes", to: "/admin/reports" },
     { icon: Settings, label: "Ajustes" },
-    { icon: HelpCircle, label: "Ayuda", to: "/ayuda" },
+    { icon: HelpCircle, label: "Ayuda", to: "/admin/ayuda" },
   ];
 
   const isActiveRoute = (to: string) => {
@@ -61,12 +61,12 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
   return (
     <aside
       className={cn(
-        "fixed inset-y-0 left-0 z-50 flex h-full min-h-screen w-[min(18rem,88vw)] flex-col bg-navy text-white transition-all duration-300 ease-in-out lg:static lg:z-auto",
+        "fixed inset-y-0 left-0 z-50 flex h-dvh w-[min(18rem,88vw)] shrink-0 flex-col overflow-hidden bg-navy text-white transition-all duration-300 ease-in-out lg:static lg:z-auto lg:h-full",
         isCollapsed ? "lg:w-24" : "lg:w-64",
         mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0",
       )}
     >
-      <div className="flex h-16 items-center justify-between border-b border-white/10 px-3">
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/10 px-3">
         <div className={cn(isCollapsed && "lg:hidden")}>
           <CustomLogo inverted />
         </div>
@@ -94,7 +94,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
         </button>
       </div>
 
-      <nav className="flex-1 overflow-y-auto p-3">
+      <nav className="min-h-0 flex-1 overflow-y-auto p-3">
         <ul className="space-y-1">
           {menuItems.map((item, index) => {
             const Icon = item.icon;
@@ -134,7 +134,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
         </ul>
       </nav>
 
-      <div className="border-t border-white/10 p-3">
+      <div className="shrink-0 border-t border-white/10 p-3">
         <div
           className={cn(
             "flex items-center gap-3 rounded-md p-2",

@@ -7,6 +7,7 @@ import { useAuthStore } from "@/auth/store/auth.store";
 import { currencyFormatter } from "@/lib/currencyFormatter";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/interfaces/product.interface";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import {
   AlertTriangle,
   Banknote,
@@ -67,7 +68,7 @@ const ProductRow = ({ product }: { product: Product }) => {
       <div className="size-12 shrink-0 overflow-hidden rounded-md border border-navy/10 bg-[#f7f3eb]">
         {product.images[0] ? (
           <img
-            src={product.images[0]}
+            src={getProductImageUrl(product.images[0])}
             alt={product.title}
             className="h-full w-full object-cover"
           />

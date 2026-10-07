@@ -1,6 +1,9 @@
 import gissApi from "@/api/gissApi";
 import type { Product } from "@/interfaces/product.interface";
-import { getProductImageUrl } from "@/shop/helpers/product-image";
+import {
+  getProductImageUrl,
+  toStoredProductImage,
+} from "@/shop/helpers/product-image";
 
 export const createUpdateProductAction = async (
   productLike: Partial<Product> & { files?: File[] },
@@ -12,9 +15,9 @@ export const createUpdateProductAction = async (
   rest.stock = Number(rest.stock || 0);
   rest.price = Number(rest.price || 0);
 
-  const keptImageNames = images.map(getImageFileName);
-  const uploadedImageNames = files.length > 0 ? await uploadFiles(files) : [];
-  const imagesToSave = [...keptImageNames, ...uploadedImageNames];
+  const keptImages = images.map(toStoredProductImage).filter(Boolean);
+  const uploadedImages = files.length > 0 ? await uploadFiles(files) : [];
+  const imagesToSave = [...keptImages, ...uploadedImages];
 
   const { data } = await gissApi<Product>({
     url: isCreating ? "/products" : `/products/${id}`,
@@ -36,11 +39,6 @@ interface FileResponse {
   fileName?: string;
 }
 
-const getImageFileName = (image: string) => {
-  if (!image.includes("http")) return image;
-  return image.split("/").pop() || image;
-};
-
 const uploadFiles = async (files: File[]) => {
   const uploadPromises = files.map(async (file) => {
     const formData = new FormData();
@@ -51,7 +49,12 @@ const uploadFiles = async (files: File[]) => {
       formData,
     );
 
-    return data.fileName || getImageFileName(data.secureUrl);
+    const imageUrl = data.secureUrl || data.fileName;
+    if (!imageUrl) {
+      throw new Error("El servidor no devolvió la URL de la imagen.");
+    }
+
+    return imageUrl;
   });
 
   return Promise.all(uploadPromises);

@@ -1,3 +1,4 @@
+import { AdminTitle } from "@/admin/components/AdminTitle";
 import { PageEnter } from "@/components/custom/PageEnter";
 import { Button } from "@/components/ui/button";
 import { CustomJumbotron } from "@/shop/components/CustomJumbotron";
@@ -55,7 +56,8 @@ const HelpSection = ({
 );
 
 export const HelpPage = () => {
-  const { hash } = useLocation();
+  const { hash, pathname } = useLocation();
+  const inAdmin = pathname.startsWith("/admin");
 
   useEffect(() => {
     if (!hash) return;
@@ -65,13 +67,26 @@ export const HelpPage = () => {
 
   return (
     <PageEnter>
-      <CustomJumbotron
-        title="Centro de ayuda"
-        description="Una guía breve de Giss Shop: cómo explorar el catálogo, usar el carrito y moverte por la cuenta y el panel de administración."
-      />
+      {inAdmin ? (
+        <div className="mb-6 animate-fade-up">
+          <AdminTitle
+            title="Ayuda"
+            description="Una guía breve de Giss Shop: cómo explorar el catálogo, usar el carrito y moverte por la cuenta y el panel de administración."
+          />
+        </div>
+      ) : (
+        <CustomJumbotron
+          title="Centro de ayuda"
+          description="Una guía breve de Giss Shop: cómo explorar el catálogo, usar el carrito y moverte por la cuenta y el panel de administración."
+        />
+      )}
 
-      <section className="py-8 sm:py-12 px-4 lg:px-8">
-        <div className="container mx-auto max-w-3xl space-y-10">
+      <section className={inAdmin ? undefined : "py-8 sm:py-12 px-4 lg:px-8"}>
+        <div
+          className={
+            inAdmin ? "max-w-3xl space-y-10" : "container mx-auto max-w-3xl space-y-10"
+          }
+        >
           <div className="animate-fade-up rounded-lg border border-gold/25 bg-[#f7f3eb] p-5 sm:p-6">
             <div className="flex items-start gap-4">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-navy">

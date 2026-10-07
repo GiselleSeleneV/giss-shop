@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { getProductImageUrl } from "@/shop/helpers/product-image";
 import { useState } from "react";
 
 interface ProductGalleryProps {
@@ -26,7 +27,7 @@ export const ProductGallery = ({ images, title }: ProductGalleryProps) => {
       <div className="relative aspect-square overflow-hidden bg-[#f7f3eb] rounded-sm ring-1 ring-gold/20">
         <img
           key={mainImage}
-          src={mainImage}
+          src={getProductImageUrl(mainImage)}
           alt={title}
           className="h-full w-full object-cover animate-page-in"
         />
@@ -47,7 +48,7 @@ export const ProductGallery = ({ images, title }: ProductGalleryProps) => {
               )}
             >
               <img
-                src={image}
+                src={getProductImageUrl(image)}
                 alt={`${title} ${index + 1}`}
                 className="h-full w-full object-cover"
               />
