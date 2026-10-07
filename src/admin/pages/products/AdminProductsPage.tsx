@@ -18,7 +18,7 @@ import { Pencil, PlusIcon } from "lucide-react";
 import { Link } from "react-router";
 
 export const AdminProductsPage = () => {
-  const { data, isLoading } = useProducts();
+  const { data } = useProducts();
 
   return (
     <PageEnter>

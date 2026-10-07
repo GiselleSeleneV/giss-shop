@@ -2,7 +2,6 @@ import { create } from "zustand";
 import type { User } from "@/interfaces/user.interface";
 import { loginAction } from "../actions/login.action";
 import { checkAuthAction } from "../actions/checkAuth.action";
-import { unsetMarker } from "@tanstack/react-query";
 
 type AuthStatus = "authenticated" | "unauthenticated" | "checking";
 

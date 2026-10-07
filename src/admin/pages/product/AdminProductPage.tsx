@@ -27,7 +27,7 @@ export const AdminProductPage = () => {
         });
         navigate(`/admin/product/${data.id}`);
       },
-      onError: (error) => {
+      onError: () => {
         toast.error("Error al actualizar el producto", {
           position: "top-right",
         });
