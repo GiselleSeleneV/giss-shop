@@ -1,7 +1,8 @@
 import { useAuthStore } from "@/auth/store/auth.store";
 import { Search, Settings, Menu } from "lucide-react";
 import { useRef } from "react";
-import { useNavigate } from "react-router";
+import { useLocation, useNavigate } from "react-router";
+import { cn } from "@/lib/utils";
 
 interface AdminHeaderProps {
   onMenuClick: () => void;
@@ -9,6 +10,7 @@ interface AdminHeaderProps {
 
 export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const { user } = useAuthStore();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -55,8 +57,15 @@ export const AdminHeader = ({ onMenuClick }: AdminHeaderProps) => {
           <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
             <button
               type="button"
-              className="hidden rounded-lg p-2 text-navy/70 transition-colors hover:bg-[#f7f3eb] md:block"
+              onClick={() => navigate("/admin/ajustes")}
+              className={cn(
+                "cursor-pointer rounded-lg p-2 transition-colors hover:bg-[#f7f3eb]",
+                pathname === "/admin/ajustes"
+                  ? "text-gold"
+                  : "text-navy/70",
+              )}
               aria-label="Ajustes"
+              aria-current={pathname === "/admin/ajustes" ? "page" : undefined}
             >
               <Settings size={20} />
             </button>

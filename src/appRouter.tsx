@@ -14,6 +14,7 @@ import { AdminProductsPage } from "./admin/pages/products/AdminProductsPage";
 import { AdminUsersPage } from "./admin/pages/users/AdminUsersPage";
 import { AdminUserPage } from "./admin/pages/user/AdminUserPage";
 import { AdminReportsPage } from "./admin/pages/reports/AdminReportsPage";
+import { AdminSettingsPage } from "./admin/pages/settings/AdminSettingsPage";
 import {
   AdminRoute,
   UnauthenticateddRoutes,
@@ -110,6 +111,10 @@ export const AppRouter = createBrowserRouter([
       {
         path: "ayuda",
         element: <HelpPage />,
+      },
+      {
+        path: "ajustes",
+        element: <AdminSettingsPage />,
       },
     ],
   },

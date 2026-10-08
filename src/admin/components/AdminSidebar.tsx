@@ -44,7 +44,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({
     { icon: BarChart3, label: "Productos", to: "/admin/products" },
     { icon: Users, label: "Usuarios", to: "/admin/users" },
     { icon: FileText, label: "Reportes", to: "/admin/reports" },
-    { icon: Settings, label: "Ajustes" },
+    { icon: Settings, label: "Ajustes", to: "/admin/ajustes" },
     { icon: HelpCircle, label: "Ayuda", to: "/admin/ayuda" },
   ];
 
